@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+require 'forwardmachine'
+require 'optparse'
+
+options = {
+  log: 'forwardmachine.log'
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: forwardmachine [options]"
+
+  opts.on("-f", "--forwarder-host [HOST]", String, "Forwarder host (default: localhost)") do |v|
+    options[:forwarder_host] = v
+  end
+
+  opts.on("-r", "--ports-range [RANGE]", String, "Forwarder ports range (default: 23200..23500)") do |v|
+    options[:ports_range] = Range.new(*v.split("..").map(&:to_i))
+  end
+
+  opts.on("-b", "--bind [HOST]", String, "Controller host (default: localhost) ") do |v|
+    options[:host] = v
+  end
+
+  opts.on("-p", "--port [PORT]", Integer, "Controller port (default: 8899)") do |v|
+    options[:port] = v
+  end
+
+  opts.on("-l", "--log [PATH]", String, "Log file (default: forwardmachine.log)") do |v|
+    options[:log] = v
+  end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+ForwardMachine.logger_path = options[:log]
+
+controller = ForwardMachine::Controller.new(options)
+controller.run

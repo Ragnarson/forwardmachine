@@ -3,7 +3,7 @@ module ForwardMachine
   # ports pool. Each connection is handled by ForwarderConnection object
   class Forwarder
     # How long server will be open, waiting for the first connetion.
-    FIRST_USE_TIMEOUT = 15
+    FIRST_USE_TIMEOUT = 60
 
     attr_reader :host, :destination, :ports_pool, :port, :connections
 

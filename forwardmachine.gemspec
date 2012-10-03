@@ -17,9 +17,9 @@ Gem::Specification.new do |gem|
   gem.name          = "forwardmachine"
   gem.require_paths = ["lib"]
   gem.version       = ForwardMachine::VERSION
-  
-  gem.add_runtime_dependency "eventmachine"
+
+  gem.add_runtime_dependency "eventmachine", "~> 0.12"
   gem.add_runtime_dependency "em-logger"
-  
+
   gem.add_development_dependency "rspec"
 end

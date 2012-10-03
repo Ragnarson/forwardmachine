@@ -16,25 +16,25 @@ module ForwardMachine
     # Internal: After client is connected to forwarder, open connection
     # to destination host and port
     def post_init
-      logger.info("Client #{peer} connected to forwarder #{@forwarder} to #{@destination}")
+      logger.info("Client #{peer} connected to forwarder #{@forwarder}")
       EM.connect(@destination_host, @destination_port,
         ForwardedConnection, self)
     rescue RuntimeError => e
-      logger.error("Client #{peer} on #{@forwarder} couldn't be connected with #{@destination}")
+      logger.error("Client #{peer} on #{@forwarder} couldn't be connected with destination")
       close_connection
     end
 
     # Internal: After forwarder destination disconnected
     # terminate forwarder connection
     def proxy_target_unbound
-      logger.info("Destination #{@destination} disconnected from forwarder #{@forwarder}")
+      logger.info("Destination disconnected from forwarder #{@forwarder}")
       close_connection
     end
 
     # Internal: After client disconnects from forwarder
     # notify forwarder server about it.
     def unbind
-      logger.info("Client #{peer} disconnected from forwarder #{@forwarder} to #{@destination}")
+      logger.info("Client #{peer} disconnected from forwarder #{@forwarder}")
       @forwarder.forwarder_connection_closed
     end
 

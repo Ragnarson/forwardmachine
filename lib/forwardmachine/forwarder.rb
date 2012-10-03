@@ -25,12 +25,15 @@ module ForwardMachine
     # Public: Start forwarding server on given host and port taken from PortsPool.
     # Returns: Socket address of the server in format "host:port" as String
     def start
-      @server = EM.start_server(host, port, ForwarderConnection, destination, self) {
+      @server = EM.start_server(host, port, ForwarderConnection, destination, self) do
         @connections += 1
         @inactivity_timer.cancel
-      }
-      @inactivity_timer = EM::PeriodicTimer.new(FIRST_USE_TIMEOUT) { stop }
-      logger.info("Started forwarder #{socket_address} to #{destination}")
+      end
+      @inactivity_timer = EM::PeriodicTimer.new(FIRST_USE_TIMEOUT) do
+        logger.info("Forwarder #{self} timed out after #{FIRST_USE_TIMEOUT} seconds")
+        stop
+      end
+      logger.info("Started forwarder #{self}")
       socket_address
     end
 
@@ -48,13 +51,13 @@ module ForwardMachine
     end
 
     def to_s
-      socket_address
+      "#{socket_address}->#{destination}"
     end
 
     private
 
     def stop
-      logger.info("Stopped forwarder #{socket_address} to #{destination}")
+      logger.info("Stopped forwarder #{self}")
       @inactivity_timer.cancel
       EM.stop_server(@server)
       ports_pool.release(port)

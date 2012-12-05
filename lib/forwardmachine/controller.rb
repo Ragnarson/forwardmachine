@@ -13,6 +13,10 @@ module ForwardMachine
 
     def run
       EM.run {
+        EM.error_handler { |error|
+          logger.error(error.message)
+          logger.error(error.backtrace.join("\n"))
+        }
         EM.start_server(@host, @port, ControllerConnection,
           @forwarder_host, @ports)
         logger.info("Started controller at #{@host}:#{@port}")

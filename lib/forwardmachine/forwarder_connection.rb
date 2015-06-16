@@ -21,6 +21,7 @@ module ForwardMachine
         ForwardedConnection, self)
     rescue RuntimeError => e
       logger.error("Client #{peer} on #{@forwarder} couldn't be connected with destination")
+      logger.close
       close_connection
     end
 
@@ -35,6 +36,7 @@ module ForwardMachine
     # notify forwarder server about it.
     def unbind
       logger.info("Client #{peer} disconnected from forwarder #{@forwarder}")
+      logger.close
       @forwarder.forwarder_connection_closed
     end
 

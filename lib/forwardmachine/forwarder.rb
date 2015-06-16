@@ -58,6 +58,7 @@ module ForwardMachine
 
     def stop
       logger.info("Stopped forwarder #{self}")
+      logger.close
       @inactivity_timer.cancel
       EM.stop_server(@server)
       ports_pool.release(port)
